@@ -11,9 +11,7 @@ export default function Header() {
         <span className="font-bold text-creamWhite">MAIL SERVICE</span>
       </div>
       <ul className="flex justify-between items-center flex-grow">
-        <li>
-          <input type="text" placeholder="Search from Message" />
-        </li>
+        <li></li>
         <li className="relative">
           <div
             className="flex items-center gap-4 cursor-pointer select-none"
@@ -33,10 +31,9 @@ export default function Header() {
               sds
             </div>
           </div>
-          {/*//$ ============Logout=============== */}
           <div
             className={cn(
-              "absolute -bottom-16 left-0 hidden p-4 w-full bg-grey rounded-md",
+              "absolute z-50 -bottom-16 left-0 hidden p-4 w-full bg-grey rounded-md",
               {
                 block: isOpen,
               }
