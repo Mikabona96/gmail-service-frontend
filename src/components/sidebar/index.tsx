@@ -110,14 +110,14 @@ export const Sidebar = () => {
           New Message
         </div>
       </div>
-      <nav className="flex mt-8 gap-6 flex-col">
+      <nav className="flex mt-8 flex-col">
         {categories.map(({ Icon, category, name }, idx) => {
           return (
             <Link
               href={`/${category.toLowerCase()}`}
               key={idx}
               className={cn(
-                "flex items-center py-[6px] pl-6 gap-6 relative cursor-pointer",
+                "flex items-center py-[6px] pl-6 gap-4 relative cursor-pointer",
                 {
                   "before:content-[''] before:absolute before:left-0 before:top-0 before:h-full before:w-[2px] before:rounded-lg before:bg-creamWhite":
                     pathname.slice(1) === category.toLowerCase(),
@@ -134,7 +134,7 @@ export const Sidebar = () => {
                 }
               />
               <span
-                className={cn("text-lightGrey font-semibold", {
+                className={cn("text-lightGrey font-medium", {
                   "text-creamWhite":
                     pathname.slice(1) === category.toLowerCase(),
                 })}
@@ -144,14 +144,14 @@ export const Sidebar = () => {
             </Link>
           );
         })}
-        <div className="w-full px-4">
+        <div className="w-full my-6 px-4">
           <div className="h-[1px] bg-divider"></div>
         </div>
         <div
-          className="flex flex-col px-4 gap-4"
+          className="flex flex-col px-4"
           onClick={() => setIsAccordionOpen(!isAccordionOpen)}
         >
-          <div className="flex items-center justify-between cursor-pointer select-none">
+          <div className="flex items-center justify-between mb-4 cursor-pointer select-none">
             <span className="text-lightGrey font-semibold text-sm">
               MESSAGE CATEGORIES
             </span>
@@ -171,7 +171,7 @@ export const Sidebar = () => {
                   href={`/${category.toLowerCase()}`}
                   key={idx}
                   className={cn(
-                    "flex items-center py-[6px] pl-6 gap-6 relative cursor-pointer",
+                    "flex items-center py-[6px] pl-6 gap-4 relative cursor-pointer",
                     {
                       "before:content-[''] before:absolute before:left-0 before:top-0 before:h-full before:w-[2px] before:rounded-lg before:bg-creamWhite":
                         pathname.slice(1) === category.toLowerCase(),
@@ -188,7 +188,7 @@ export const Sidebar = () => {
                     }
                   />
                   <span
-                    className={cn("text-lightGrey font-semibold", {
+                    className={cn("text-lightGrey font-medium", {
                       "text-creamWhite":
                         pathname.slice(1) === category.toLowerCase(),
                     })}

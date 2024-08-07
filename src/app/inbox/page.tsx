@@ -1,4 +1,4 @@
-import React from "react";
+"use client";
 import { Topbar } from "./elements/topbar";
 import { MessagePreview } from "@/components/messagePreview";
 

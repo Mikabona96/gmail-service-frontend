@@ -64,7 +64,7 @@ export const Topbar = () => {
           Social(111)
         </div>
       </div>
-      <div className="flex gap-6 items-center">
+      <div className="flex gap-4 items-center">
         <MdRefresh
           width={"24px"}
           height={"24px"}
