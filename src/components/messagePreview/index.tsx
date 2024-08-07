@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { Checkbox } from "../checkbox";
 import { cn } from "@/lib/utils";
 import { FaRegStar, FaCircleExclamation, FaTrash } from "react-icons/fa6";
@@ -9,17 +9,25 @@ import Link from "next/link";
 import { IoMailUnread } from "react-icons/io5";
 
 type PropTypes = {
-  checked: boolean;
+  checked?: boolean;
   unread: boolean;
-  starred: boolean;
-  hasAttachments: boolean;
+  starred?: boolean;
+  hasAttachments?: boolean;
+  snippet: string;
+  subject: string;
+  from: string;
 };
 
-export const MessagePreview = () => {
+export const MessagePreview: FC<PropTypes> = ({
+  unread,
+  snippet,
+  subject,
+  from,
+  starred,
+  hasAttachments,
+}) => {
+  console.log("🚀 ~ snippet:", snippet);
   const checked = true;
-  const unread = true;
-  const starred = true;
-  const hasAttachments = true;
   const [isPropertiesOpen, setIsPropertiesOpen] = useState(false);
 
   useEffect(() => {
@@ -35,7 +43,7 @@ export const MessagePreview = () => {
     };
   }, [isPropertiesOpen]);
   return (
-    <div className="p-6">
+    <div className="">
       <div
         className={cn("flex w-full items-center gap-6 px-6 py-2", {
           "bg-grey rounded-md": unread,
@@ -44,26 +52,30 @@ export const MessagePreview = () => {
         <span className="p-2 cursor-pointer">
           <Checkbox checked={checked} />
         </span>
-        <div className="flex items-center w-full justify-between">
+        <div className="flex items-center w-full">
           <Link href={"#"} className="flex grow gap-12 pr-6">
-            <div className="flex items-center max-w-[320px] w-full justify-between">
+            <div className="flex items-center gap-3 w-full">
               <span className="text-creamWhite font-medium text-sm text-ellipsis overflow-hidden whitespace-nowrap">
-                Name of Sender
+                {from}
               </span>
-              <span className="text-creamWhite text-sm font-medium text-ellipsis overflow-hidden whitespace-nowrap">
-                Subject of message
+              <span className="text-creamWhite w-[200px] text-sm font-medium text-ellipsis overflow-hidden whitespace-nowrap">
+                {subject.trim()}
               </span>
             </div>
-            <div className="flex w-full max-w-[600px] justify-between items-center">
+            <div className="flex w-full max-w-[600px] gap-6 items-center">
               {unread && (
                 <div className="px-4 py-1 text-sm bg-red text-creamWhite font-medium rounded-md">
                   NEW
                 </div>
               )}
-              <div className="text-sm text-lightGrey max-w-[500px] text-ellipsis overflow-hidden whitespace-nowrap">
-                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sunt
-                voluptatum ratione, quisquam qui eius similique voluptas natus
-                nesciunt.
+              <div
+                className={cn(
+                  "text-sm text-lightGrey max-w-[280px] overflow-hidden whitespace-nowrap"
+                )}
+              >
+                {`${snippet}`.length > 32
+                  ? snippet.slice(0, 32) + "..."
+                  : snippet}
               </div>
             </div>
           </Link>
@@ -91,7 +103,7 @@ export const MessagePreview = () => {
             {isPropertiesOpen && (
               <div
                 id="message_properies"
-                className="absolute right-[-13px] flex flex-col gap-2 top-[37px] rounded-md bg-grey w-[200px] p-4"
+                className="absolute z-30 right-[-13px] flex flex-col gap-2 top-[37px] rounded-md bg-grey w-[200px] p-4"
               >
                 <span className="text-creamWhite flex gap-2 items-center cursor-pointer select-none">
                   {" "}

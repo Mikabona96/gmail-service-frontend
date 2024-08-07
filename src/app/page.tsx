@@ -1,6 +1,6 @@
 "use client";
 import { useAuth } from "@/hooks/useAuth";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
 
 const Home = () => {
@@ -10,6 +10,7 @@ const Home = () => {
   const picture = searchParams.get("picture");
   const email = searchParams.get("email");
   const setUser = useAuth((state) => state.setUser);
+  const router = useRouter();
 
   useEffect(() => {
     if (email) {
@@ -21,6 +22,7 @@ const Home = () => {
       });
     } else {
       setUser(null);
+      router.push("/");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
