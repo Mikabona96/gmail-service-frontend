@@ -1,26 +1,18 @@
 "use client";
 import { useEffect, useState } from "react";
-import { getMessages, MessageType } from "./actions/getMessages";
-import { Topbar } from "./elements/topbar";
 import { MessagePreview } from "@/components/messagePreview";
+import { getCategoryMessages, MessageType } from "../inbox/actions/getMessages";
 
-const Inbox = () => {
+const Trash = () => {
   const [messages, setMessages] = useState<MessageType[] | null>(null);
 
   useEffect(() => {
-    getMessages().then((msgs) => setMessages(msgs.messages));
+    getCategoryMessages("trash").then((msgs) => setMessages(msgs.messages));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (!messages) {
-    return (
-      <div className="text-creamWhite font-semibold text-2xl">No messages</div>
-    );
-  }
-
   return (
     <div className="flex flex-col flex-grow">
-      <Topbar />
       <div className="p-6 flex flex-col gap-2">
         {messages &&
           messages.map((message) => {
@@ -51,4 +43,4 @@ const Inbox = () => {
   );
 };
 
-export default Inbox;
+export default Trash;

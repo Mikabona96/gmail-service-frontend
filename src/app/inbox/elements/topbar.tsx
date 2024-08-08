@@ -8,7 +8,7 @@ import { IoChevronForwardCircle } from "react-icons/io5";
 export const Topbar = () => {
   const categories = ["all", "unread", "promo", "social"];
   const [checkboxChecked, setCheckboxChecked] = useState(false);
-  const [category, setCategory] = useState("unread");
+  const [category, setCategory] = useState("all");
   return (
     <div className="px-6 py-4 h-[56px] justify-between border-b-[1px] border-b-divider flex items-center w-full">
       <div className="flex items-center gap-6 ">

@@ -50,7 +50,9 @@ export default function RootLayout({
         <Header />
         <div className="flex min-h-[100vh] bg-black">
           <Sidebar />
-          <main className="bg-darkGrey flex flex-grow">{children}</main>
+          <main className="bg-darkGrey flex-grow flex max-w-[calc(100%-250px)]">
+            {children}
+          </main>
         </div>
       </body>
     </html>

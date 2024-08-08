@@ -30,3 +30,36 @@ export const getMessages = async (): Promise<Response> => {
   );
   return await messages.json();
 };
+export const getMessage = async (id: string): Promise<MessageType> => {
+  const messages = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/messages/${id}`,
+    {
+      credentials: "include",
+    }
+  );
+  return await messages.json();
+};
+export const getAttachments = async (
+  id: string,
+  attachmentId: string
+): Promise<string> => {
+  const messages = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/messages/attachment/${id}?id=${attachmentId}`,
+    {
+      credentials: "include",
+    }
+  );
+  return await messages.json();
+};
+
+export const getCategoryMessages = async (
+  category: string
+): Promise<Response> => {
+  const messages = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/messages/list?category=${category}`,
+    {
+      credentials: "include",
+    }
+  );
+  return await messages.json();
+};

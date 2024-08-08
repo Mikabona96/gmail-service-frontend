@@ -1,5 +1,11 @@
 "use client";
-import React, { FC, useEffect, useState } from "react";
+import React, {
+  Dispatch,
+  FC,
+  SetStateAction,
+  useEffect,
+  useState,
+} from "react";
 import { Checkbox } from "../checkbox";
 import { cn } from "@/lib/utils";
 import { FaRegStar, FaCircleExclamation, FaTrash } from "react-icons/fa6";
@@ -7,8 +13,10 @@ import { GrAttachment } from "react-icons/gr";
 import { PiDotsThreeVerticalBold } from "react-icons/pi";
 import Link from "next/link";
 import { IoMailUnread } from "react-icons/io5";
+import { MessageType } from "@/app/inbox/actions/getMessages";
 
 type PropTypes = {
+  id: string;
   checked?: boolean;
   unread: boolean;
   starred?: boolean;
@@ -16,17 +24,21 @@ type PropTypes = {
   snippet: string;
   subject: string;
   from: string;
+  messages: MessageType[] | null;
+  setMessages: Dispatch<SetStateAction<MessageType[] | null>>;
 };
 
 export const MessagePreview: FC<PropTypes> = ({
+  id,
   unread,
   snippet,
   subject,
   from,
   starred,
   hasAttachments,
+  messages,
+  setMessages,
 }) => {
-  console.log("🚀 ~ snippet:", snippet);
   const checked = true;
   const [isPropertiesOpen, setIsPropertiesOpen] = useState(false);
 
@@ -42,6 +54,51 @@ export const MessagePreview: FC<PropTypes> = ({
       document.removeEventListener("click", clickOutsideHandler);
     };
   }, [isPropertiesOpen]);
+
+  const toTrashMessage = (id: string) => {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/messages/to-trash?id=${id}`, {
+      credentials: "include",
+    });
+
+    setMessages((prev) => {
+      if (prev) {
+        const filtered = prev.filter((message) => message.id !== id);
+        return filtered;
+      }
+      return null;
+    });
+  };
+  const toSpamMessage = (id: string) => {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/messages/to-spam?id=${id}`, {
+      credentials: "include",
+    });
+
+    setMessages((prev) => {
+      if (prev) {
+        const filtered = prev.filter((message) => message.id !== id);
+        return filtered;
+      }
+      return null;
+    });
+  };
+  const markUnread = (id: string) => {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/messages/to-unread?id=${id}`, {
+      credentials: "include",
+    });
+
+    setMessages((prev) => {
+      if (prev) {
+        const filtered = prev.map((message) => {
+          if (message.id === id) {
+            message.labelIds.push("UNREAD");
+          }
+          return message;
+        });
+        return filtered;
+      }
+      return null;
+    });
+  };
   return (
     <div className="">
       <div
@@ -53,7 +110,7 @@ export const MessagePreview: FC<PropTypes> = ({
           <Checkbox checked={checked} />
         </span>
         <div className="flex items-center w-full">
-          <Link href={"#"} className="flex grow gap-12 pr-6">
+          <Link href={`/inbox/${id}`} className="flex grow gap-12 pr-6">
             <div className="flex items-center gap-3 w-full">
               <span className="text-creamWhite font-medium text-sm text-ellipsis overflow-hidden whitespace-nowrap">
                 {from}
@@ -105,7 +162,10 @@ export const MessagePreview: FC<PropTypes> = ({
                 id="message_properies"
                 className="absolute z-30 right-[-13px] flex flex-col gap-2 top-[37px] rounded-md bg-grey w-[200px] p-4"
               >
-                <span className="text-creamWhite flex gap-2 items-center cursor-pointer select-none">
+                <span
+                  onClick={() => markUnread(id)}
+                  className="text-creamWhite flex gap-2 items-center cursor-pointer select-none"
+                >
                   {" "}
                   <IoMailUnread
                     className="w-[16px] h-[16px] cursor-pointer"
@@ -113,14 +173,20 @@ export const MessagePreview: FC<PropTypes> = ({
                   />
                   Mark as unread
                 </span>
-                <span className="text-creamWhite flex gap-2 items-center cursor-pointer select-none">
+                <span
+                  onClick={() => toSpamMessage(id)}
+                  className="text-creamWhite flex gap-2 items-center cursor-pointer select-none"
+                >
                   <FaCircleExclamation
                     className="w-[16px] h-[16px] cursor-pointer"
                     color={"#FF974A"}
                   />
                   Mark as spam
                 </span>
-                <span className="text-creamWhite flex gap-2 items-center cursor-pointer select-none">
+                <span
+                  onClick={() => toTrashMessage(id)}
+                  className="text-creamWhite flex gap-2 items-center cursor-pointer select-none"
+                >
                   <FaTrash
                     className="w-[16px] h-[16px] cursor-pointer"
                     color={"#FC5A5A"}
