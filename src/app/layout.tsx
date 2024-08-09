@@ -4,7 +4,6 @@ import { Montserrat } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/header";
 import { Sidebar } from "@/components/sidebar";
-import { useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 
 const inter = Montserrat({ subsets: ["latin", "cyrillic"] });
@@ -20,30 +19,27 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const setUser = useAuth((state) => state.setUser);
-  useEffect(() => {
-    const userInfo = fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/info`, {
-      credentials: "include",
-    })
-      .then((resp) => {
-        if (resp.status === 200) {
-          return resp.json();
-        } else {
-          return null;
-        }
-      })
-      .then((info) => {
-        if (!info) {
-          setUser(null);
-        } else {
-          setUser({
-            email: `${info.email}`,
-            firstName: `${info.given_name}`,
-            lastName: `${info.family_name}`,
-            picture: `${info.picture}`,
-          });
-        }
+  const getUser = async () => {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/auth/info`,
+      {
+        credentials: "include",
+      }
+    );
+
+    const userInfo = await response.json();
+    if (userInfo?.statusCode === 401) {
+      setUser(null);
+    } else {
+      setUser({
+        email: userInfo.email,
+        firstName: userInfo.given_name,
+        lastName: userInfo.family_name,
+        picture: userInfo.picture,
       });
-  }, []);
+    }
+  };
+  getUser();
   return (
     <html lang="en">
       <body className={`${inter.className}`}>
