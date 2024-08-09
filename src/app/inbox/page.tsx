@@ -6,6 +6,9 @@ import { MessagePreview } from "@/components/messagePreview";
 
 const Inbox = () => {
   const [messages, setMessages] = useState<MessageType[] | null>(null);
+  const [category, setCategory] = useState<
+    "all" | "UNREAD" | "CATEGORY_PROMOTIONS" | "CATEGORY_SOCIAL"
+  >("all");
 
   useEffect(() => {
     getMessages().then((msgs) => setMessages(msgs.messages));
@@ -18,12 +21,22 @@ const Inbox = () => {
     );
   }
 
+  const sortHandler = () => {
+    if (category === "all") return messages;
+    const sorted = messages.filter((msg) => msg.labelIds.includes(category));
+    return sorted;
+  };
+
   return (
     <div className="flex flex-col flex-grow">
-      <Topbar />
+      <Topbar
+        sortedCount={sortHandler().length || 0}
+        category={category}
+        setCategory={setCategory}
+      />
       <div className="p-6 flex flex-col gap-2">
         {messages &&
-          messages.map((message) => {
+          sortHandler().map((message) => {
             const unread =
               message.labelIds &&
               message.labelIds.filter((label) => label === "UNREAD");

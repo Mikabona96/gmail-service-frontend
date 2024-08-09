@@ -1,14 +1,24 @@
 "use client";
 import { Checkbox } from "@/components/checkbox";
 import { cn } from "@/lib/utils";
-import React, { useState } from "react";
+import React, { Dispatch, FC, SetStateAction, useState } from "react";
 import { MdRefresh } from "react-icons/md";
 import { IoChevronForwardCircle } from "react-icons/io5";
 
-export const Topbar = () => {
-  const categories = ["all", "unread", "promo", "social"];
+type PropTypes = {
+  category: "all" | "UNREAD" | "CATEGORY_PROMOTIONS" | "CATEGORY_SOCIAL";
+  setCategory: Dispatch<
+    SetStateAction<"all" | "UNREAD" | "CATEGORY_PROMOTIONS" | "CATEGORY_SOCIAL">
+  >;
+  sortedCount: number;
+};
+
+export const Topbar: FC<PropTypes> = ({
+  category,
+  setCategory,
+  sortedCount,
+}) => {
   const [checkboxChecked, setCheckboxChecked] = useState(false);
-  const [category, setCategory] = useState("all");
   return (
     <div className="px-6 py-4 h-[56px] justify-between border-b-[1px] border-b-divider flex items-center w-full">
       <div className="flex items-center gap-6 ">
@@ -25,43 +35,43 @@ export const Topbar = () => {
             }
           )}
         >
-          All(111)
+          All{category === "all" && `(${sortedCount})`}
         </div>
         <div
-          onClick={() => setCategory("unread")}
+          onClick={() => setCategory("UNREAD")}
           className={cn(
             "text-creamWhite relative font-semibold flex gap-2 items-center cursor-pointer select-none text-sm",
             {
               'before:content-[""] before:absolute before:w-full before:h-[2px] before:-bottom-2 before:translate-x-[-50%] before:left-[50%] before:bg-blue':
-                category === "unread",
+                category === "UNREAD",
             }
           )}
         >
-          Unread(111)
+          Unread{category === "UNREAD" && `(${sortedCount})`}
         </div>
         <div
-          onClick={() => setCategory("promo")}
+          onClick={() => setCategory("CATEGORY_PROMOTIONS")}
           className={cn(
             "text-creamWhite relative font-semibold flex gap-2 items-center cursor-pointer select-none text-sm",
             {
               'before:content-[""] before:absolute before:w-full before:h-[2px] before:-bottom-2 before:translate-x-[-50%] before:left-[50%] before:bg-blue':
-                category === "promo",
+                category === "CATEGORY_PROMOTIONS",
             }
           )}
         >
-          Promo(111)
+          Promo{category === "CATEGORY_PROMOTIONS" && `(${sortedCount})`}
         </div>
         <div
-          onClick={() => setCategory("social")}
+          onClick={() => setCategory("CATEGORY_SOCIAL")}
           className={cn(
             "text-creamWhite relative font-semibold flex gap-2 items-center cursor-pointer select-none text-sm",
             {
               'before:content-[""] before:absolute before:w-full before:h-[2px] before:-bottom-2 before:translate-x-[-50%] before:left-[50%] before:bg-blue':
-                category === "social",
+                category === "CATEGORY_SOCIAL",
             }
           )}
         >
-          Social(111)
+          Social{category === "CATEGORY_SOCIAL" && `(${sortedCount})`}
         </div>
       </div>
       <div className="flex gap-4 items-center">

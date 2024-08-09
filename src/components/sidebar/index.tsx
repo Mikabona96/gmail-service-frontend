@@ -100,7 +100,14 @@ export const Sidebar = () => {
   return (
     <aside className="pt-8 pb-12 h-full w-[250px] flex flex-col">
       <div className="w-full px-3 flex items-center justify-center text-[#fff]">
-        <div className="bg-grey w-full rounded-md flex items-center gap-2 py-2 px-4 text-creamWhite font-semibold">
+        <div
+          onClick={() => {
+            fetch(`${process.env.NEXT_PUBLIC_API_URL}/messages/message/send`, {
+              credentials: "include",
+            });
+          }}
+          className="bg-grey w-full rounded-md flex items-center gap-2 py-2 px-4 text-creamWhite font-semibold"
+        >
           <IoCreateOutline
             width={"24px"}
             height={"24px"}
