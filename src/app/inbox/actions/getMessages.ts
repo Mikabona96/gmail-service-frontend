@@ -24,6 +24,24 @@ export type MessageType = {
   threadId: string;
 };
 
+export type ThreadMessageType = {
+  id: string;
+  threadId: string;
+  labelIds: string[];
+  snippet: string;
+  payload: {
+    partId: string;
+    mimeType: string;
+    filename: string;
+    headers: { name: string; value: string }[];
+    body: any;
+  };
+  sizeEstimate: number;
+  historyId: string;
+  internalDate: string;
+  decodedValue: string;
+};
+
 export const getMessages = async (): Promise<Response> => {
   const messages = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/messages/list`,
@@ -60,6 +78,18 @@ export const getCategoryMessages = async (
 ): Promise<Response> => {
   const messages = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/messages/list?category=${category}`,
+    {
+      credentials: "include",
+    }
+  );
+  return await messages.json();
+};
+
+export const getThreadMessages = async (
+  threadId: string
+): Promise<ThreadMessageType[]> => {
+  const messages = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/messages/thread/${threadId}`,
     {
       credentials: "include",
     }
