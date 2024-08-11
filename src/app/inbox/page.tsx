@@ -11,7 +11,10 @@ const Inbox = () => {
   >("all");
 
   useEffect(() => {
-    getMessages().then((msgs) => setMessages(msgs.messages));
+    getMessages().then((msgs) => {
+      const filtered = msgs.messages.filter((msg) => !msg.headers.References);
+      setMessages(filtered);
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

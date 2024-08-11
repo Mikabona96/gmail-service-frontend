@@ -10,6 +10,9 @@ export type MessageType = {
     To: string;
     From: string;
     Date: string;
+    "Message-ID": string;
+    References?: string;
+    "In-Reply-To"?: string;
   };
   historyId: string;
   htmlPage: string;

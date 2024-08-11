@@ -12,6 +12,7 @@ export const MessageView: FC<PropTypes> = ({ id }) => {
   const [message, setMessage] = useState<MessageType | null>(null);
   const [isReply, setIsReply] = useState(false);
   const [text, setText] = useState("");
+
   useEffect(() => {
     getMessage(id).then((msg) => setMessage(msg));
   }, []);
@@ -26,13 +27,7 @@ export const MessageView: FC<PropTypes> = ({ id }) => {
     );
   }
 
-  const sendReplyHandler = (data: {
-    messageId: string;
-    subject: string;
-    text: string;
-    to: string;
-    threadId: string;
-  }) => {
+  const sendReplyHandler = (data: { messageId: string; text: string }) => {
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/messages/message/reply`, {
       credentials: "include",
       method: "POST",
@@ -122,16 +117,13 @@ export const MessageView: FC<PropTypes> = ({ id }) => {
             <div className="flex items-center">
               <div
                 onClick={() => {
-                  const to = message.headers.To.split("<")[1].slice(
+                  const to = message.headers.From.split("<")[1].slice(
                     0,
-                    message.headers.To.split("<")[1].length - 1
+                    message.headers.From.split("<")[1].length - 1
                   );
                   sendReplyHandler({
                     messageId: message.id,
-                    threadId: message.threadId,
-                    subject: message.headers.Subject,
                     text,
-                    to,
                   });
                   setIsReply(!isReply);
                 }}
