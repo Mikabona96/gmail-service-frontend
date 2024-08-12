@@ -5,6 +5,8 @@ import "./globals.css";
 import Header from "@/components/header";
 import { Sidebar } from "@/components/sidebar";
 import { useAuth } from "@/hooks/useAuth";
+import { FormEvent, useState } from "react";
+import { cn } from "@/lib/utils";
 
 const inter = Montserrat({ subsets: ["latin", "cyrillic"] });
 
@@ -19,6 +21,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const setUser = useAuth((state) => state.setUser);
+  const [isWriteMesageOpen, setIsWriteMessageOpen] = useState(false);
+  const [isHidden, setIsHidden] = useState(false);
+
+  const [to, setTo] = useState("");
+  const [subject, setSubject] = useState("");
+  const [message, setMessage] = useState("");
+
   const getUser = async () => {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/auth/info`,
@@ -40,15 +49,109 @@ export default function RootLayout({
     }
   };
   getUser();
+
+  const onSubmitHandler = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/messages/message/send`, {
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      method: "POST",
+      body: JSON.stringify({ to, subject, message }),
+    }).then((data) => {
+      if (data.status === 201) {
+        setSubject("");
+        setTo("");
+        setMessage("");
+        setIsWriteMessageOpen(!isWriteMesageOpen);
+      }
+    });
+  };
   return (
     <html lang="en">
       <body className={`${inter.className}`}>
         <Header />
-        <div className="flex min-h-[100vh] bg-black">
-          <Sidebar />
+        <div className="flex min-h-[100vh] bg-black relative">
+          <Sidebar setIsWriteMessageOpen={setIsWriteMessageOpen} />
           <main className="bg-darkGrey flex-grow flex max-w-[calc(100%-250px)]">
             {children}
           </main>
+          <div
+            className={cn(
+              "fixed top-[calc(99vh-500px)] hidden right-[13px] flex-col w-[400px] h-[500px] border-[2px] bg-darkGrey border-divider  z-50 rounded-md",
+              {
+                flex: isWriteMesageOpen,
+                "h-[40px] w-[260px] top-[calc(99vh-40px)] bg-grey": isHidden,
+              }
+            )}
+          >
+            <div className="flex items-center mt-2 justify-between">
+              {isHidden && (
+                <div className="text-creamWhite ml-2 font-semibold">
+                  New Message
+                </div>
+              )}
+              <div className="ml-auto items-center flex gap-[2px]">
+                {!isHidden && (
+                  <div
+                    onClick={() => setIsHidden(true)}
+                    className="rounded-full items-center cursor-pointer justify-center flex mr-2  group bg-yellow h-4 w-4"
+                  ></div>
+                )}
+                <div
+                  onClick={() => setIsHidden(false)}
+                  className="rounded-full items-center cursor-pointer justify-center flex mr-2  group bg-green h-4 w-4"
+                ></div>
+                <div
+                  onClick={() => {
+                    setIsHidden(false);
+                    setIsWriteMessageOpen((prev) => !prev);
+                  }}
+                  className="rounded-full items-center cursor-pointer justify-center flex mr-2  group bg-red h-4 w-4"
+                ></div>
+              </div>
+            </div>
+            {!isHidden && (
+              <form
+                onSubmit={onSubmitHandler}
+                className="p-4 flex flex-col gap-4 mt-4"
+              >
+                <div className="flex grow gap-2 font-medium">
+                  <input
+                    onChange={(e) => setTo(e.target.value)}
+                    value={to}
+                    placeholder="To:"
+                    className="grow placeholder:text-creamWhite outline-none bg-grey text-creamWhite rounded-md border-divider placeholder:font-semibold border-[2px] p-1"
+                    name="to"
+                    type="email"
+                  />
+                </div>
+                <div className="flex grow gap-2 font-medium">
+                  <input
+                    onChange={(e) => setSubject(e.target.value)}
+                    value={subject}
+                    placeholder="Subject:"
+                    className="grow placeholder:text-creamWhite outline-none bg-grey text-creamWhite rounded-md border-divider placeholder:font-semibold border-[2px] p-1"
+                    name="subject"
+                    type="text"
+                  />
+                </div>
+                <div className="rounded-md border-divider mt-10 border-[2px] h-[226px]">
+                  <textarea
+                    onChange={(e) => setMessage(e.target.value)}
+                    value={message}
+                    className="resize-none bg-grey h-full outline-none text-creamWhite w-full placeholder:text-blue placeholder:font-semibold p-1"
+                    name="message"
+                    id=""
+                  ></textarea>
+                </div>
+                <button className="outline-none bg-blue w-fit px-6 py-2 self-end rounded-full text-creamWhite">
+                  Send
+                </button>
+              </form>
+            )}
+          </div>
         </div>
       </body>
     </html>

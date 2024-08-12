@@ -18,10 +18,14 @@ import {
 } from "react-icons/md";
 import { FaMoneyCheck, FaChevronDown } from "react-icons/fa";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { Dispatch, FC, SetStateAction, useState } from "react";
 import Link from "next/link";
 
-export const Sidebar = () => {
+type PropTypes = {
+  setIsWriteMessageOpen: Dispatch<SetStateAction<boolean>>;
+};
+
+export const Sidebar: FC<PropTypes> = ({ setIsWriteMessageOpen }) => {
   const pathname = usePathname();
 
   const [isAccordionOpen, setIsAccordionOpen] = useState(false);
@@ -102,11 +106,9 @@ export const Sidebar = () => {
       <div className="w-full px-3 flex items-center justify-center text-[#fff]">
         <div
           onClick={() => {
-            fetch(`${process.env.NEXT_PUBLIC_API_URL}/messages/message/send`, {
-              credentials: "include",
-            });
+            setIsWriteMessageOpen((prev) => !prev);
           }}
-          className="bg-grey w-full rounded-md flex items-center gap-2 py-2 px-4 text-creamWhite font-semibold"
+          className="bg-grey w-full rounded-md flex items-center gap-2 py-2 px-4 select-none cursor-pointer text-creamWhite font-semibold"
         >
           <IoCreateOutline
             width={"24px"}
