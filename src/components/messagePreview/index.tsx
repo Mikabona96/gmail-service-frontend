@@ -17,7 +17,7 @@ import { MessageType } from "@/app/inbox/actions/getMessages";
 
 type PropTypes = {
   id: string;
-  checked?: boolean;
+  checked: boolean;
   unread: boolean;
   starred?: boolean;
   hasAttachments?: boolean;
@@ -26,6 +26,7 @@ type PropTypes = {
   from: string;
   messages: MessageType[] | null;
   setMessages: Dispatch<SetStateAction<MessageType[] | null>>;
+  setCheckedMsgs: Dispatch<SetStateAction<string[]>>;
 };
 
 export const MessagePreview: FC<PropTypes> = ({
@@ -38,8 +39,9 @@ export const MessagePreview: FC<PropTypes> = ({
   hasAttachments,
   messages,
   setMessages,
+  checked,
+  setCheckedMsgs,
 }) => {
-  const checked = true;
   const [isPropertiesOpen, setIsPropertiesOpen] = useState(false);
 
   useEffect(() => {
@@ -99,6 +101,14 @@ export const MessagePreview: FC<PropTypes> = ({
       return null;
     });
   };
+
+  const setCheckedMsg = () => {
+    if (checked) {
+      setCheckedMsgs((prev) => prev.filter((mId) => mId !== id));
+    } else {
+      setCheckedMsgs((prev) => [...prev, id]);
+    }
+  };
   return (
     <div className="">
       <div
@@ -106,7 +116,7 @@ export const MessagePreview: FC<PropTypes> = ({
           "bg-grey rounded-md": unread,
         })}
       >
-        <span className="p-2 cursor-pointer">
+        <span onClick={setCheckedMsg} className="p-2 cursor-pointer">
           <Checkbox checked={checked} />
         </span>
         <div className="flex items-center w-full">

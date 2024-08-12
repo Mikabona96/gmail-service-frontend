@@ -6,6 +6,7 @@ import { MessagePreview } from "@/components/messagePreview";
 
 const Inbox = () => {
   const [messages, setMessages] = useState<MessageType[] | null>(null);
+  const [checkedMsgs, setCheckedMsgs] = useState<string[]>([]);
   const [category, setCategory] = useState<
     "all" | "UNREAD" | "CATEGORY_PROMOTIONS" | "CATEGORY_SOCIAL"
   >("all");
@@ -33,6 +34,10 @@ const Inbox = () => {
   return (
     <div className="flex flex-col flex-grow">
       <Topbar
+        setMessages={setMessages}
+        setCheckedMsgs={setCheckedMsgs}
+        idArray={messages.map((msg) => msg.id)}
+        checkedMsgs={checkedMsgs}
         sortedCount={sortHandler().length || 0}
         category={category}
         setCategory={setCategory}
@@ -49,6 +54,7 @@ const Inbox = () => {
             // console.log(unread && unread[0] === "UNREAD");
             return (
               <MessagePreview
+                checked={!!checkedMsgs.find((msg) => msg === message.id)}
                 messages={messages}
                 setMessages={setMessages}
                 id={message.id}
@@ -59,6 +65,7 @@ const Inbox = () => {
                 starred={starred && starred[0] === "STARRED"}
                 unread={unread && unread[0] === "UNREAD"}
                 key={message.id}
+                setCheckedMsgs={setCheckedMsgs}
               />
             );
           })}

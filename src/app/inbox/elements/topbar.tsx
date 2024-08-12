@@ -1,10 +1,17 @@
 "use client";
 import { Checkbox } from "@/components/checkbox";
 import { cn } from "@/lib/utils";
-import React, { Dispatch, FC, SetStateAction, useState } from "react";
+import React, {
+  Dispatch,
+  FC,
+  SetStateAction,
+  useEffect,
+  useState,
+} from "react";
 import { MdRefresh } from "react-icons/md";
 import { IoChevronForwardCircle } from "react-icons/io5";
 import { FaTrash } from "react-icons/fa6";
+import { getMessages, MessageType } from "../actions/getMessages";
 
 type PropTypes = {
   category: "all" | "UNREAD" | "CATEGORY_PROMOTIONS" | "CATEGORY_SOCIAL";
@@ -12,20 +19,42 @@ type PropTypes = {
     SetStateAction<"all" | "UNREAD" | "CATEGORY_PROMOTIONS" | "CATEGORY_SOCIAL">
   >;
   sortedCount: number;
+  checkedMsgs: string[];
+  idArray: string[];
+  setCheckedMsgs: Dispatch<SetStateAction<string[]>>;
+  setMessages: Dispatch<SetStateAction<MessageType[] | null>>;
 };
 
 export const Topbar: FC<PropTypes> = ({
   category,
   setCategory,
   sortedCount,
+  checkedMsgs,
+  setCheckedMsgs,
+  idArray,
+  setMessages,
 }) => {
   const [checkboxChecked, setCheckboxChecked] = useState(false);
+  useEffect(() => {
+    if (idArray.length !== checkedMsgs.length) {
+      setCheckboxChecked(false);
+    } else {
+      setCheckboxChecked(true);
+    }
+  }, [checkedMsgs.length, idArray.length]);
   return (
     <div className="px-6 py-4 h-[56px] justify-between border-b-[1px] border-b-divider flex items-center w-full">
       <div className="flex items-center gap-6 ">
         <div
           className="cursor-pointer"
-          onClick={() => setCheckboxChecked(!checkboxChecked)}
+          onClick={() => {
+            if (checkboxChecked) {
+              setCheckedMsgs([]);
+            } else {
+              setCheckedMsgs(idArray);
+            }
+            setCheckboxChecked(!checkboxChecked);
+          }}
         >
           <Checkbox checked={checkboxChecked} />
         </div>
@@ -78,12 +107,39 @@ export const Topbar: FC<PropTypes> = ({
           Social{category === "CATEGORY_SOCIAL" && `(${sortedCount})`}
         </div>
 
-        <div className="flex items-center gap-4">
-          <div className="text-creamWhite flex items-center gap-2 cursor-pointer px-2 py-1 bg-red rounded-md">
-            Delete
-            <FaTrash className="w-4 h-4 text-creamWhite" />
+        {checkedMsgs.length > 0 && (
+          <div className="flex items-center gap-4">
+            <div
+              onClick={() => {
+                fetch(
+                  `${process.env.NEXT_PUBLIC_API_URL}/messages/delete-batch`,
+                  {
+                    credentials: "include",
+                    method: "DELETE",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(checkedMsgs),
+                  }
+                ).then((data) => {
+                  if (data.status === 200) {
+                    getMessages().then((msgs) => {
+                      const filtered = msgs.messages.filter(
+                        (msg) => !msg.headers.References
+                      );
+                      setMessages(filtered);
+                    });
+                    setCheckedMsgs([]);
+                  }
+                });
+              }}
+              className="text-creamWhite flex items-center gap-2 cursor-pointer px-2 py-1 bg-red rounded-md"
+            >
+              Delete({checkedMsgs.length})
+              <FaTrash className="w-4 h-4 text-creamWhite" />
+            </div>
           </div>
-        </div>
+        )}
       </div>
       <div className="flex gap-4 items-center">
         <MdRefresh

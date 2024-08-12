@@ -5,6 +5,7 @@ import { getCategoryMessages, MessageType } from "../inbox/actions/getMessages";
 
 const Trash = () => {
   const [messages, setMessages] = useState<MessageType[] | null>(null);
+  const [checkedMsgs, setCheckedMsgs] = useState<string[]>([]);
 
   useEffect(() => {
     getCategoryMessages("trash").then((msgs) => setMessages(msgs.messages));
@@ -25,6 +26,7 @@ const Trash = () => {
             // console.log(unread && unread[0] === "UNREAD");
             return (
               <MessagePreview
+                checked={!!checkedMsgs.find((msg) => msg === message.id)}
                 messages={messages}
                 setMessages={setMessages}
                 id={message.id}
@@ -35,6 +37,7 @@ const Trash = () => {
                 starred={starred && starred[0] === "STARRED"}
                 unread={unread && unread[0] === "UNREAD"}
                 key={message.id}
+                setCheckedMsgs={setCheckedMsgs}
               />
             );
           })}
