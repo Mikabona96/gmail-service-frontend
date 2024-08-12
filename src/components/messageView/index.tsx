@@ -90,6 +90,7 @@ export const MessageView: FC<PropTypes> = ({ id }) => {
           ></div>
         )}
         <Reply
+          setThread={setThread}
           threadId={message.threadId}
           messageId={message.id}
           to={message.headers.From}
@@ -98,7 +99,12 @@ export const MessageView: FC<PropTypes> = ({ id }) => {
       </div>
       {thread &&
         thread.map((msg) => (
-          <ThreadMessage key={msg.id} msg={msg} thread={thread} />
+          <ThreadMessage
+            setThread={setThread}
+            key={msg.id}
+            msg={msg}
+            thread={thread}
+          />
         ))}
     </div>
   );

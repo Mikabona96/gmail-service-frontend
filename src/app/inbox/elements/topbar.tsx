@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import React, { Dispatch, FC, SetStateAction, useState } from "react";
 import { MdRefresh } from "react-icons/md";
 import { IoChevronForwardCircle } from "react-icons/io5";
+import { FaTrash } from "react-icons/fa6";
 
 type PropTypes = {
   category: "all" | "UNREAD" | "CATEGORY_PROMOTIONS" | "CATEGORY_SOCIAL";
@@ -22,7 +23,10 @@ export const Topbar: FC<PropTypes> = ({
   return (
     <div className="px-6 py-4 h-[56px] justify-between border-b-[1px] border-b-divider flex items-center w-full">
       <div className="flex items-center gap-6 ">
-        <div onClick={() => setCheckboxChecked(!checkboxChecked)}>
+        <div
+          className="cursor-pointer"
+          onClick={() => setCheckboxChecked(!checkboxChecked)}
+        >
           <Checkbox checked={checkboxChecked} />
         </div>
         <div
@@ -72,6 +76,13 @@ export const Topbar: FC<PropTypes> = ({
           )}
         >
           Social{category === "CATEGORY_SOCIAL" && `(${sortedCount})`}
+        </div>
+
+        <div className="flex items-center gap-4">
+          <div className="text-creamWhite flex items-center gap-2 cursor-pointer px-2 py-1 bg-red rounded-md">
+            Delete
+            <FaTrash className="w-4 h-4 text-creamWhite" />
+          </div>
         </div>
       </div>
       <div className="flex gap-4 items-center">

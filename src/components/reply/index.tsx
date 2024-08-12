@@ -1,3 +1,7 @@
+import {
+  getThreadMessages,
+  ThreadMessageType,
+} from "@/app/inbox/actions/getMessages";
 import React, { FC, useState } from "react";
 import { BsFillReplyFill } from "react-icons/bs";
 import { FaTrash } from "react-icons/fa6";
@@ -6,9 +10,15 @@ type PropTypes = {
   to: string;
   messageId: string;
   threadId: string;
+  setThread: React.Dispatch<React.SetStateAction<ThreadMessageType[] | null>>;
 };
 
-export const Reply: FC<PropTypes> = ({ to, messageId }) => {
+export const Reply: FC<PropTypes> = ({
+  to,
+  messageId,
+  setThread,
+  threadId,
+}) => {
   const [isReply, setIsReply] = useState(false);
   const [text, setText] = useState("");
 
@@ -20,6 +30,10 @@ export const Reply: FC<PropTypes> = ({ to, messageId }) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
+    }).then((data) => {
+      if (data.status === 201) {
+        getThreadMessages(threadId).then((msgs) => setThread(msgs));
+      }
     });
   };
 

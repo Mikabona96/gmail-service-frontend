@@ -5,9 +5,10 @@ import { Reply } from "../reply";
 type PropTypes = {
   msg: ThreadMessageType;
   thread: ThreadMessageType[];
+  setThread: React.Dispatch<React.SetStateAction<ThreadMessageType[] | null>>;
 };
 
-export const ThreadMessage: FC<PropTypes> = ({ msg, thread }) => {
+export const ThreadMessage: FC<PropTypes> = ({ msg, thread, setThread }) => {
   return (
     <div className="self-start w-full mt-4 text-creamWhite" key={msg.id}>
       <div className="self-start font-medium text-xl text-creamWhite">
@@ -34,6 +35,7 @@ export const ThreadMessage: FC<PropTypes> = ({ msg, thread }) => {
         dangerouslySetInnerHTML={{ __html: msg.decodedValue }}
       ></div>
       <Reply
+        setThread={setThread}
         threadId={msg.threadId}
         messageId={msg.id}
         to={`${
