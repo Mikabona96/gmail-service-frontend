@@ -22,7 +22,11 @@ export const Reply: FC<PropTypes> = ({
   const [isReply, setIsReply] = useState(false);
   const [text, setText] = useState("");
 
-  const sendReplyHandler = (data: { messageId: string; text: string }) => {
+  const sendReplyHandler = (data: {
+    messageId: string;
+    text: string;
+    threadId: string;
+  }) => {
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/messages/message/reply`, {
       credentials: "include",
       method: "POST",
@@ -68,7 +72,7 @@ export const Reply: FC<PropTypes> = ({
             <div className="flex items-center">
               <div
                 onClick={() => {
-                  sendReplyHandler({ messageId, text });
+                  sendReplyHandler({ messageId, text, threadId });
                   setIsReply(!isReply);
                 }}
                 className="w-fit mt-1 rounded-3xl bg-blue flex gap-2 items-center text-creamWhite px-6 py-2 cursor-pointer"
